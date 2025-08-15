@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <title>Blackjack Vite</title>
+  </head>
+  <body>
+    <header class="titulo">Blackjack</header>
+    <!-- botones -->
+    <div class="row mt-2" id="box-heroe" >
+        <div class="col text-center">
+
+            <button class="btn btn-danger"  id="btn_new"   >  NEW GAME   </button>
+            <button class="btn btn-primary" id="btn_pedir" > PEDIR CARTA </button>
+            <button class="btn btn-primary" id="btn_stop"  >    STOP     </button>
+
+        </div>
+    </div>
+    <!-- box carta Jugador -->
+    <div class="row container mt-3">
+
+        <div class="col ">
+
+            <h1>Jugador <strong>1</strong> - <small>0</small></h1>
+            
+            <div class="boxcartas" id="cards_user">
+                <!-- imagenes insertadas desde javascript -->
+                
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- box Carta Computadora -->
+    <div class="row container mt-3">
+
+        <div class="col">
+
+            <h1>Jugador <strong>CPU</strong> - <small>0</small></h1>
+            
+            <div class="boxcartas" id="cards_CPU">
+                <!-- imagenes insertadas desde Javascript -->
+
+            </div>
+
+        </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+ 
+  </body>
+</html>
