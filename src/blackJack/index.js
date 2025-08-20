@@ -1,3 +1,6 @@
+// import { createCards  } from './usecase/create_cards';
+// import { askCards  } from './usecase/askCards';
+// import { valueCards  } from './usecase/valueCards';
 
 // *note: podemos hacer varias importaciones separadas o unirlas en un solo archivo y exportalas
 import { createCards, askCards, valueCards } from './usecase';
@@ -12,6 +15,7 @@ export const initGame = (() => {
   let players             = [];
   let pointPlayers        = [];
   let playerCPU           = 0;
+  let turnPlayer          = 0;
   const typeCards         = ['C', 'D', 'H', 'S'];
   const specialCards      = [ 'A', 'J', 'K', 'Q'];
 
@@ -29,7 +33,8 @@ export const initGame = (() => {
       pointPlayers = [];
       players      = [];
       playerCPU    = 0 ; //  incializo todas las variables para que no guarden datos anteriores
-      
+      turnPlayer   = 0 ;
+
       //TODO: ciclo que crea el arreglo de los jugadores (players) y sus puntos (pointPlayers)
       for ( let i = 0; i < numbPlayers; i++){
 
@@ -78,10 +83,21 @@ export const initGame = (() => {
   }
 
 
-  // ************ Funcion turno computadora ******** //
-  const turnoCpu = ( puntosUsuario ) => {
+  const highPoint = (pointsPlayers) => {
 
-      console.log({ puntosUsuario });
+    let max = Math.max(...pointsPlayers)
+    return max ;
+  }
+
+  // ************ Funcion turno computadora ******** //
+  /**
+   * 
+   * @param { Number } maxPointPlayers 
+   * @returns block
+   */
+  const turnoCpu = ( maxPointPlayers ) => {
+
+      console.log({ maxPointPlayers });
       
       let pointCpu = 0;
 
@@ -92,18 +108,18 @@ export const initGame = (() => {
           const cartas    = cards;
           pointCpu        =  puntosJugadores(cartas, playerCPU );
 
-          console.log({ cards });
-          console.table({ players, pointPlayers });
-          console.log({playerCPU});
+        //   console.log({ cards });
+        //   console.table({ players, pointPlayers });
+        //   console.log({playerCPU});
 
-          console.log({ pointCpu });
+        //   console.log({ pointCpu });
 
-          if ( puntosUsuario > 21 ){
+          if ( maxPointPlayers > 21 ){
               break;
           }
 
 
-      } while ( pointCpu <= puntosUsuario ){
+      } while ( pointCpu <= maxPointPlayers ){
 
       setTimeout(() => {
 
@@ -111,16 +127,16 @@ export const initGame = (() => {
 
                   alert( '🎉​🎉 🏆​​ ERES UN CAMPEON GANASTE 🏆​ ✅​✅​' )
 
-              } else if ( pointCpu > puntosUsuario ){
+              } else if ( pointCpu > maxPointPlayers ){
 
                   alert ('🖥️​🖥️​🖥️ Perdiste Gano la computadora jajajajajaj 💢​💢​');
                   btnStop.disabled = true;
               
               }
 
-              if ( pointCpu === 21 && puntosUsuario === 21 ){
+              if ( pointCpu === 21 && maxPointPlayers === 21 ){
 
-                  alert( `Hay un Empate CPU: ${pointCpu} y Jugador: ${puntosUsuario}` )
+                  alert( `Hay un Empate CPU: ${pointCpu} y Jugador: ${maxPointPlayers}` )
               }
 
           }, 200);
@@ -130,6 +146,8 @@ export const initGame = (() => {
       return
 
   };
+
+
 
   //* bloqueo de botonones
   const bloqueoBtn = ( activacion ) => ( btnStop.disabled = activacion, btnPedir.disabled = activacion ); //
@@ -141,12 +159,13 @@ export const initGame = (() => {
   btnPedir.addEventListener('click', () => {
       
     const cartas  = cards;
-    let pointUser = puntosJugadores(cartas, 0);
-
+    let pointUser = puntosJugadores( cartas, turnPlayer );
     
-    console.log({ cards });
-    console.table({ players, pointPlayers });
-    console.log({playerCPU});    
+    // console.log({ cards });
+    // console.table({ players, pointPlayers });
+    // console.log({playerCPU}); 
+    console.log({turnPlayer});
+       
 
         
     setTimeout(() => {
@@ -173,30 +192,59 @@ export const initGame = (() => {
   //***EVENTO CLICK BOTON  STOP, EL CUAL INICIA JUEGO COMPUTADORA***//
   btnStop.addEventListener( 'click', ()=>{
 
-    turnoCpu(pointPlayers[0]);
+    turnPlayer++ // DISPARO EL TURNO DE JUGADOR;
+    console.log({ turnPlayer, playerCPU });
+ 
+    
+    const maxpoint = highPoint(pointPlayers)
+    // console.log({turnPlayer});
+    if ( turnPlayer === playerCPU ) {
+        
+        turnoCpu(maxpoint);
+    }
+    
 
 
   } );
 
 
+
   btnNewGame.addEventListener('click', ()=>{
       console.clear();
 
-  //    const numeroJugadores = prompt('Numero de Jugadores');
+    // FIXME: REVISAR VALIDACIONES numbJugadores 
+    let numbJugadores ;
+    // try {
 
-      startGame();
+    //     if (isNaN(numbJugadores) ) throw new Error('Introduca un numero valido');
+        
+    // } catch (error) {
 
-      // verificacion de datos creados 
-          console.log({ cards });
-          console.table({ players, pointPlayers });
-          console.log({playerCPU});
+    //     console.warn(error);
+        
+        
+    // }finally{
+
+    //     numbJugadores = parseInt(prompt('Numero de Jugadores'));
+
+    // }
+
+
+
+    startGame(numbJugadores);
+
+    // verificacion de datos creados 
+    console.log({ cards });
+    console.table({ players, pointPlayers });
+    console.log({ playerCPU });
+    console.log({ turnPlayer });
           
   });
 
   return{
     
     NewGame   : startGame,
-    lockbutton: bloqueoBtn,
+    lockButton: bloqueoBtn,
 
 
   }
