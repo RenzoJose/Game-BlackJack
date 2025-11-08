@@ -11,9 +11,6 @@
 
     if (!typeCards || typeCards.length == 0) throw new Error('Tipos de Cartas es Obligatorio');
     
-
-
-
     let cards = [];
 
     // cartas del 2 al 10 por tipo de carta

@@ -8,49 +8,50 @@ import { createCards, askCards, valueCards } from './usecase';
 
 export const initGame = (() => {
    
-    'use strict'
+  'use strict'
 
   // Entradas variables globales
-  let cards               = [];
-  let players             = [];
-  let pointPlayers        = [];
-  let playerCPU           = 0;
-  let turnPlayer          = 0;
-  const typeCards         = ['C', 'D', 'H', 'S'];
-  const specialCards      = [ 'A', 'J', 'K', 'Q'];
+let cards          = [];
+let players        = [];
+let pointPlayers   = [];
+let playerCPU      = 0;
+let turnPlayer     = 0;
+const typeCards    = ['C', 'D', 'H', 'S'];
+const specialCards = [ 'A', 'J', 'K', 'Q'];
 
-  const btnNewGame        = document.querySelector( '#btn_new' )
-  const btnPedir          = document.querySelector( '#btn_pedir' );
-  const btnStop           = document.querySelector('#btn_stop');
+const btnNewGame   = document.querySelector( '#btn_new' )
+const btnPedir     = document.querySelector( '#btn_pedir' );
+const btnStop      = document.querySelector('#btn_stop');
 
-  const pointScreen       = document.querySelectorAll( 'small');
-  const boxCartas         = document.querySelectorAll('.boxcartas');
+const pointScreen  = document.querySelectorAll( 'small');
+const boxCartas    = document.querySelectorAll('.boxcartas');
 
   // FUNCION INICIO DEL JUEGO
   const startGame = ( numbPlayers = 2 ) => {
-      let c        = ''; 
-      cards        = [];
-      pointPlayers = [];
-      players      = [];
-      playerCPU    = 0 ; //  incializo todas las variables para que no guarden datos anteriores
-      turnPlayer   = 0 ;
+    let c        = ''; 
+    cards        = [];
+    pointPlayers = [];
+    players      = [];
+    playerCPU    = 0 ; //  incializo todas las variables para que no guarden datos anteriores
+    turnPlayer   = 0 ;
 
-      //TODO: ciclo que crea el arreglo de los jugadores (players) y sus puntos (pointPlayers)
-      for ( let i = 0; i < numbPlayers; i++){
+    //TODO: funcion para renderizar el numero de jugadores 
 
-        c = `Jugador-${i + 1}` // LE ASIGNO UN NOMBRE AL JUGADOR
-        pointPlayers.push(0);
-        players.push(c);
-      }
-      
-      boxCartas.forEach( (items) => items.innerHTML = '' ); // reinicio los div del html con las cartas
-      pointScreen.forEach( items => items.innerText = 0) ;  // reinicio las etiqueta small que contiene los puntos en pantalla
+    for ( let i = 0; i < numbPlayers; i++){
 
-      playerCPU = players.length - 1 ; // establezco el ultimo jugador es la computadora
+      c = `Jugador-${i + 1}` // LE ASIGNO UN NOMBRE AL JUGADOR
+      pointPlayers.push(0);
+      players.push(c);
+    }
+    
+    boxCartas.forEach( (items) => items.innerHTML = '' ); // reinicio los div del html con las cartas
+    pointScreen.forEach( items => items.innerText = 0) ;  // reinicio las etiqueta small que contiene los puntos en pantalla
 
-      cards = createCards( typeCards, specialCards ); //como salida creo la cartas de nuevo 
+    playerCPU = players.length - 1 ; // establezco el ultimo jugador es la computadora
 
-      bloqueoBtn(false); // desbloqueo los botones de pedir cartas / stop 
+    cards = createCards( typeCards, specialCards ); //como salida creo la cartas de nuevo 
+
+    bloqueoBtn(false); // desbloqueo los botones de pedir cartas / stop 
                       
             
   }
@@ -59,32 +60,31 @@ export const initGame = (() => {
   // ********Generar puntos a los Jugadores ******** //
   const puntosJugadores = ( cartas, numbJugador )=> {
 
-      const valorCarta = askCards(cartas);  
+    const valorCarta = askCards(cartas);  
 
-      pointPlayers[ numbJugador ] +=  valueCards( valorCarta ); // Contador de puntos llamando a la funcion valor de la carta
-      pointScreen[ numbJugador ].innerText = pointPlayers[ numbJugador ]; // inserto los puntos acumulados en el HTML en la etiqueta small
+    pointPlayers[ numbJugador ] +=  valueCards( valorCarta ); // Contador de puntos llamando a la funcion valor de la carta
+    pointScreen[ numbJugador ].innerText = pointPlayers[ numbJugador ]; // inserto los puntos acumulados en el HTML en la etiqueta small
 
-      cartasHtml( valorCarta, numbJugador );// llamo a la funcion PARA crear las cartas en el html, y le paso el valor de la carta y el numero de jugador
+    cartasHtml( valorCarta, numbJugador );// llamo a la funcion PARA crear las cartas en el html, y le paso el valor de la carta y el numero de jugador
 
-      return pointPlayers[ numbJugador ]; // retorno los puntos del jugador 
+    return pointPlayers[ numbJugador ]; // retorno los puntos del jugador 
 
   } 
 
   // ******** Generar cartas en el HTML *********** //
   const cartasHtml = ( valorCarta, numberJugador )=>{
 
-      const imgCards = document.createElement( 'img' ); // creo una imagen el DOM
-      imgCards.src = `assets/cartas/${ valorCarta }.png`;
+    const imgCards = document.createElement( 'img' ); // creo una imagen el DOM
+    imgCards.src = `assets/cartas/${ valorCarta }.png`;
 
-      imgCards.classList.add( 'cards' ); // LE AGREGO LA CLASE DEL ESTILO DEL CSS
+    imgCards.classList.add( 'cards' ); // LE AGREGO LA CLASE DEL ESTILO DEL CSS
 
-      boxCartas[ numberJugador ].append( imgCards ); // inserto la imagen pero tengo que decirle que jugador es en el html!!
+    boxCartas[ numberJugador ].append( imgCards ); // inserto la imagen pero tengo que decirle que jugador es en el html!!
 
   }
 
 
   const highPoint = (pointsPlayers) => {
-
     let max = Math.max(...pointsPlayers)
     return max ;
   }
@@ -97,53 +97,43 @@ export const initGame = (() => {
    */
   const turnoCpu = ( maxPointPlayers ) => {
 
-      console.log({ maxPointPlayers });
+    console.log({ maxPointPlayers });
       
-      let pointCpu = 0;
+    let pointCpu = 0;
 
-      bloqueoBtn( true ) ; // BLOQUEO BOTONOES PEDIR CARTA/STOP
-      
+    bloqueoBtn( true ) ; // BLOQUEO BOTONOES PEDIR CARTA/STOP
+    
 
-      do {
-          const cartas    = cards;
-          pointCpu        =  puntosJugadores(cartas, playerCPU );
+    do {
+      const cartas = cards;
+      pointCpu     =  puntosJugadores(cartas, playerCPU );
 
-        //   console.log({ cards });
-        //   console.table({ players, pointPlayers });
-        //   console.log({playerCPU});
-
-        //   console.log({ pointCpu });
-
-          if ( maxPointPlayers > 21 ){
-              break;
-          }
-
-
-      } while ( pointCpu <= maxPointPlayers ){
+      if ( maxPointPlayers > 21 ) break;
+     
+    } while ( pointCpu <= maxPointPlayers ){
 
       setTimeout(() => {
 
-              if ( pointCpu > 21){
+        if ( pointCpu > 21){
 
-                  alert( '🎉​🎉 🏆​​ ERES UN CAMPEON GANASTE 🏆​ ✅​✅​' )
+          alert( '🎉​🎉 🏆​​ ERES UN CAMPEON GANASTE 🏆​ ✅​✅​' )
 
-              } else if ( pointCpu > maxPointPlayers ){
+        } else if ( pointCpu > maxPointPlayers ){
 
-                  alert ('🖥️​🖥️​🖥️ Perdiste Gano la computadora jajajajajaj 💢​💢​');
-                  btnStop.disabled = true;
-              
-              }
+          alert ('🖥️​🖥️​🖥️ Perdiste Gano la computadora jajajajajaj 💢​💢​');
+          btnStop.disabled = true;
+        
+        }
 
-              if ( pointCpu === 21 && maxPointPlayers === 21 ){
+        if ( pointCpu === 21 && maxPointPlayers === 21 ){
+          alert( `Hay un Empate CPU: ${pointCpu} y Jugador: ${maxPointPlayers}` )
+        }
 
-                  alert( `Hay un Empate CPU: ${pointCpu} y Jugador: ${maxPointPlayers}` )
-              }
-
-          }, 200);
+      }, 200);
       
-      }
+    }
 
-      return
+    return
 
   };
 
@@ -160,30 +150,23 @@ export const initGame = (() => {
       
     const cartas  = cards;
     let pointUser = puntosJugadores( cartas, turnPlayer );
-    
-    // console.log({ cards });
-    // console.table({ players, pointPlayers });
-    // console.log({playerCPU}); 
-    console.log({turnPlayer});
-       
-
-        
+     
     setTimeout(() => {
             
-        if (pointUser > 21){
+      if (pointUser > 21){
 
-            alert('​🚨🚨🚨 GAME OVER 🚨​🚨​🚨​ ');
+        alert('​🚨🚨🚨 GAME OVER 🚨​🚨​🚨​ ');
 
-            bloqueoBtn(true);
-        
-            turnoCpu(pointUser);
-            
-        }else if (pointUser === 21){
+        bloqueoBtn(true);
+    
+        turnoCpu(pointUser);
+          
+      }else if (pointUser === 21){
 
-            alert( '🎊​🥇​🥇 VICTORY GAME 🥇​🥇​🎊');
-            bloqueoBtn(true);
-        
-        }
+        alert( '🎊​🥇​🥇 VICTORY GAME 🥇​🥇​🎊');
+        bloqueoBtn(true);
+      
+      }
     }, 200);
 
     
@@ -195,57 +178,39 @@ export const initGame = (() => {
     turnPlayer++ // DISPARO EL TURNO DE JUGADOR;
     console.log({ turnPlayer, playerCPU });
  
-    
     const maxpoint = highPoint(pointPlayers)
-    // console.log({turnPlayer});
+
     if ( turnPlayer === playerCPU ) {
-        
-        turnoCpu(maxpoint);
+      turnoCpu(maxpoint);
     }
-    
-
-
+   
   } );
 
-
-
   btnNewGame.addEventListener('click', ()=>{
-      console.clear();
+    console.clear();
 
     // FIXME: REVISAR VALIDACIONES numbJugadores 
     let numbJugadores ;
-    // try {
+    try {
 
-    //     if (isNaN(numbJugadores) ) throw new Error('Introduca un numero valido');
+      if (isNaN(numbJugadores) ) throw new Error('Introduca un numero valido');
         
-    // } catch (error) {
-
-    //     console.warn(error);
-        
-        
-    // }finally{
-
-    //     numbJugadores = parseInt(prompt('Numero de Jugadores'));
-
-    // }
-
-
+    } catch (error) {
+      alert('introduzca un Numero de juegadores valido max 4 jugadores')
+      console.warn(error);
+    
+    }finally{
+      numbJugadores = parseInt(prompt('Numero de Jugadores'));
+    }
 
     startGame(numbJugadores);
+    console.log({pointPlayers}, {players});
+    
 
-    // verificacion de datos creados 
-    console.log({ cards });
-    console.table({ players, pointPlayers });
-    console.log({ playerCPU });
-    console.log({ turnPlayer });
-          
   });
 
   return{
-    
     NewGame   : startGame,
     lockButton: bloqueoBtn,
-
-
   }
 })();
